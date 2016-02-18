@@ -1,0 +1,48 @@
+{
+  "tables":
+  {
+    "directors":
+    {
+      "columns":
+      {
+        "director_id":
+        {
+          "type": ["INTEGER", "PRIMARY KEY", "AUTOINCREMENT"]
+        },
+        "director_name":
+        {
+          "type": "TEXT"
+        }
+      },
+      "label": "Directors"
+    },
+    "movies":
+    {
+      "columns":
+      {
+        "movie_id":
+        {
+          "type": ["INTEGER", "PRIMARY KEY", "AUTOINCREMENT"]
+        },
+        "movie_name":
+        {
+          "type": "TEXT"
+        },
+        "year":
+        {
+          "type": "INTEGER"
+        },
+        "director_id":
+        {
+          "type": ["INTEGER", "FOREIGN KEY"],
+          "foreign_key":
+          {
+            "table": "directors",
+            "included_columns": "director_name"
+          }
+        }
+      },
+      "label": "Movies"
+    }
+  }
+}

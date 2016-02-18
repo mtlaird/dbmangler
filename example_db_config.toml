@@ -1,0 +1,36 @@
+[tables.directors]
+
+label = "Directors"
+
+[tables.directors.columns.director_id]
+
+type = ["INTEGER", "PRIMARY KEY", "AUTOINCREMENT"]
+
+[tables.directors.columns.director_name]
+
+type = "TEXT"
+
+[tables.movies]
+
+label = "Movies"
+
+[tables.movies.columns.movie_id]
+
+type = ["INTEGER", "PRIMARY KEY", "AUTOINCREMENT"]
+
+[tables.movies.columns.movie_name]
+
+type = "TEXT"
+
+[tables.movies.columns.director_id]
+
+type = ["INTEGER", "FOREIGN KEY"]
+
+[tables.movies.columns.director_id.foreign_key]
+
+table = "directors"
+included_columns = "director_name"
+
+[tables.movies.columns.year]
+
+type = "INTEGER"
