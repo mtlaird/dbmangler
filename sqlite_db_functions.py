@@ -301,7 +301,10 @@ class DB:
 
         return rows
 
-    def add_table_row(self, table_name, data):
+    def _check_data(self, table_name, data):
+
+        if table_name not in self.schema.tables:
+            return False
 
         if len(data) < self.schema.tables[table_name].get_num_columns(exclude_index=True):
             print 'ERROR: number of columns and items in data do not match'
@@ -312,6 +315,15 @@ class DB:
             if not data:
                 print 'ERROR: could not make list from data dict'
                 return False
+
+        return data
+
+    def add_table_row(self, table_name, data):
+
+        data = self._check_data(table_name, data)
+
+        if not data:
+            return False
 
         insert_command = self.make_insert_command(table_name)
         try:
@@ -325,15 +337,10 @@ class DB:
 
     def delete_table_row(self, table_name, data):
 
-        if len(data) < self.schema.tables[table_name].get_num_columns(exclude_index=True):
-            print 'ERROR: number of columns and items in data do not match'
-            return False
+        data = self._check_data(table_name, data)
 
-        if type(data) is dict:
-            data = self.make_sorted_list_from_dict(data, table_name)
-            if not data:
-                print 'ERROR: could not make list from data dict'
-                return False
+        if not data:
+            return False
 
         delete_command = self.make_delete_command(table_name)
         try:
@@ -347,23 +354,11 @@ class DB:
 
     def update_table_row(self, table_name, old_data, new_data):
 
-        if len(old_data) < self.schema.tables[table_name].get_num_columns(exclude_index=True):
-            print 'ERROR: number of columns and items in old data do not match'
+        new_data_list = self._check_data(table_name, new_data)
+        old_data_list = self._check_data(table_name, old_data)
+        if not new_data_list or not old_data_list:
             return False
-
-        if len(new_data) < self.schema.tables[table_name].get_num_columns(exclude_index=True):
-            print 'ERROR: number of columns and items in new data do not match'
-            return False
-
-        if type(old_data) is dict and type(new_data) is dict:
-            new_data_list = self.make_sorted_list_from_dict(new_data, table_name)
-            old_data_list = self.make_sorted_list_from_dict(old_data, table_name)
-            if not new_data or not old_data:
-                print 'ERROR: could not make list from data dict'
-                return False
-            data = new_data_list+old_data_list  # type: list
-        else:
-            return False
+        data = new_data_list+old_data_list  # type: list
 
         update_command = self.make_update_command(table_name)
 
