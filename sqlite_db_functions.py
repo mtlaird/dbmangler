@@ -370,3 +370,19 @@ class DB:
 
         self.con.commit()
         return True
+
+    def get_row_insert_if_not_found(self, table_name, data):
+
+        res = self.get_subset_table_rows(table_name, [data])
+        if len(res) == 1:
+            return res[0]
+
+        elif len(res) == 0:
+            if not self.add_table_row(table_name, data):
+                return False
+            res = self.get_subset_table_rows(table_name, [data])
+            if len(res) == 1:
+                return res[0]
+
+        return False
+
