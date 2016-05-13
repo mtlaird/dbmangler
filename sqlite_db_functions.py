@@ -278,28 +278,31 @@ class DB:
             if 'limit' in order_and_limit.keys():
                 select_command += 'LIMIT %s ' % order_and_limit['limit']
 
-        try:
-            self.cur.execute(select_command)
-        except sqlite3.Error as e:
-            print e
-            return False
+        # try:
+        #     self.cur.execute(select_command)
+        # except sqlite3.Error as e:
+        #     print e
+        #     return False
+        #
+        # rows = self.cur.fetchall()
+        #
+        # return rows
 
-        rows = self.cur.fetchall()
-
-        return rows
+        return self.run_select_command(select_command)
 
     def get_all_table_rows(self, table_name):
 
         select_command = self.make_simple_select_command(table_name)
-        try:
-            self.cur.execute(select_command)
-        except sqlite3.Error as e:
-            print e
-            return False
-
-        rows = self.cur.fetchall()
-
-        return rows
+        # try:
+        #     self.cur.execute(select_command)
+        # except sqlite3.Error as e:
+        #     print e
+        #     return False
+        #
+        # rows = self.cur.fetchall()
+        #
+        # return rows
+        return self.run_select_command(select_command)
 
     def _check_data(self, table_name, data):
 
@@ -326,13 +329,16 @@ class DB:
             return False
 
         insert_command = self.make_insert_command(table_name)
-        try:
-            self.cur.execute(insert_command, data)
-        except sqlite3.Error as e:
-            print e
-            return False
 
-        self.con.commit()
+        if not self.run_edit_command(insert_command, data):
+            return False
+        # try:
+        #     self.cur.execute(insert_command, data)
+        # except sqlite3.Error as e:
+        #     print e
+        #     return False
+        #
+        # self.con.commit()
         return True
 
     def delete_table_row(self, table_name, data):
@@ -343,13 +349,16 @@ class DB:
             return False
 
         delete_command = self.make_delete_command(table_name)
-        try:
-            self.cur.execute(delete_command, data)
-        except sqlite3.Error as e:
-            print e
-            return False
 
-        self.con.commit()
+        if not self.run_edit_command(delete_command, data):
+            return False
+        # try:
+        #     self.cur.execute(delete_command, data)
+        # except sqlite3.Error as e:
+        #     print e
+        #     return False
+        #
+        # self.con.commit()
         return True
 
     def update_table_row(self, table_name, old_data, new_data):
@@ -362,13 +371,15 @@ class DB:
 
         update_command = self.make_update_command(table_name)
 
-        try:
-            self.cur.execute(update_command, data)
-        except sqlite3.Error as e:
-            print e
+        if not self.run_edit_command(update_command, data):
             return False
-
-        self.con.commit()
+        # try:
+        #     self.cur.execute(update_command, data)
+        # except sqlite3.Error as e:
+        #     print e
+        #     return False
+        #
+        # self.con.commit()
         return True
 
     def get_row_insert_if_not_found(self, table_name, data):

@@ -305,11 +305,11 @@ class DB:
     def get_all_table_rows(self, table_name):
 
         select_command = self.make_simple_select_command(table_name)
-        try:
-            self.cur.execute(select_command)
-        except psycopg2.Error as e:
-            print e
-            return False
+        # try:
+        #     self.cur.execute(select_command)
+        # except psycopg2.Error as e:
+        #     print e
+        #     return False
 
         return self.run_select_command(select_command)
 
