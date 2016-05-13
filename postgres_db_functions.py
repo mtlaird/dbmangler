@@ -315,7 +315,9 @@ class DB:
             return False
 
         insert_command = self.make_insert_command(table_name)
-        self.run_edit_command(insert_command, data)
+        if not self.run_edit_command(insert_command, data):
+            return False
+
         return True
 
     def delete_table_row(self, table_name, data):
@@ -326,7 +328,9 @@ class DB:
             return False
 
         delete_command = self.make_delete_command(table_name)
-        self.run_edit_command(delete_command, data)
+        if not self.run_edit_command(delete_command, data):
+            return False
+
         return True
 
     def update_table_row(self, table_name, old_data, new_data):
@@ -339,7 +343,9 @@ class DB:
 
         update_command = self.make_update_command(table_name)
 
-        self.run_edit_command(update_command, data)
+        if not self.run_edit_command(update_command, data):
+            return False
+
         return True
 
     def get_row_insert_if_not_found(self, table_name, data):
