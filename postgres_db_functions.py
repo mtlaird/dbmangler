@@ -311,9 +311,6 @@ class DB:
             print e
             return False
 
-        # rows = self.cur.fetchall()
-        #
-        # return rows
         return self.run_select_command(select_command)
 
     def _check_data(self, table_name, data):
@@ -367,3 +364,27 @@ class DB:
 
         self.run_edit_command(update_command, data)
         return True
+
+    def get_row_insert_if_not_found(self, table_name, data):
+
+        res = self.get_subset_table_rows(table_name, [data])
+        if len(res) == 1:
+            return res[0]
+
+        elif len(res) == 0:
+            if not self.add_table_row(table_name, data):
+                return False
+            res = self.get_subset_table_rows(table_name, [data])
+            if len(res) == 1:
+                return res[0]
+
+        return False
+
+    def get_joined_table_rows(self, table_name):
+        joined_tables = {}
+        for column_name in self.schema.tables[table_name].columns:
+            if self.schema.tables[table_name].columns[column_name].foreign_key:
+                fk = self.schema.tables[table_name].columns[column_name].foreign_key
+                if fk['table'] not in joined_tables:
+                    joined_tables[fk['table']] = self.get_all_table_rows(fk['table'])
+        return joined_tables

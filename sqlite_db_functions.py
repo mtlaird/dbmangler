@@ -386,3 +386,11 @@ class DB:
 
         return False
 
+    def get_joined_table_rows(self, table_name):
+        joined_tables = {}
+        for column_name in self.schema.tables[table_name].columns:
+            if self.schema.tables[table_name].columns[column_name].foreign_key:
+                fk = self.schema.tables[table_name].columns[column_name].foreign_key
+                if fk['table'] not in joined_tables:
+                    joined_tables[fk['table']] = self.get_all_table_rows(fk['table'])
+        return joined_tables
