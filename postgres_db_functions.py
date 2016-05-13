@@ -22,24 +22,6 @@ def create_db(db_name, db_user, db_user_password=None, postgres_user='postgres',
 
 class DB:
     def __init__(self, config_file_name='example_db_config.json'):
-        # with open('example_db_config.json') as data_file:
-        #     db_config = json.load(data_file, object_hook=dbmangler_utils.decode_dict)
-        #     try:
-        #         loaded_db_tables = db_config['db_tables']
-        #     except KeyError:
-        #         loaded_db_tables = False
-        #     try:
-        #         loaded_db_name = db_config['db_name']
-        #     except KeyError:
-        #         loaded_db_name = 'default'
-        #     try:
-        #         loaded_db_user = db_config['db_user']
-        #     except KeyError:
-        #         loaded_db_user = 'username'
-        #     try:
-        #         loaded_db_password = db_config['db_password']
-        #     except KeyError:
-        #         loaded_db_password = 'password'
         if config_file_name[-5:] == '.toml':
             with open(config_file_name) as data_file:
                 db_config = pytoml.load(data_file)
@@ -305,11 +287,6 @@ class DB:
     def get_all_table_rows(self, table_name):
 
         select_command = self.make_simple_select_command(table_name)
-        # try:
-        #     self.cur.execute(select_command)
-        # except psycopg2.Error as e:
-        #     print e
-        #     return False
 
         return self.run_select_command(select_command)
 
