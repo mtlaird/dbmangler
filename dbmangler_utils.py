@@ -1,3 +1,7 @@
+import json
+import pytoml
+
+
 def decode_list(data):
     rv = []
     for item in data:
@@ -49,6 +53,53 @@ def make_list_string_from_char(input_char, length):
             ret_string += ", "
         ret_string += input_char
     return ret_string
+
+
+class DB:
+    def __init__(self, config_file_name='example_db_config.json'):
+        if config_file_name[-5:] == '.toml':
+            with open(config_file_name) as data_file:
+                db_config = pytoml.load(data_file)
+        else:
+            with open(config_file_name) as data_file:
+                db_config = json.load(data_file, object_hook=decode_dict)
+        self.schema = DBSchema(db_config)
+
+    def make_sorted_list_from_dict(self, data, table_name, prefix=''):
+        ret_list = []
+        for c in self.schema.tables[table_name].columns:
+            if c not in self.schema.tables[table_name].index_columns:
+                col_label = prefix + c
+                if col_label in data:
+                    if type(data[col_label]) is str:
+                        ret_list.append(data[col_label])
+                    elif type(data[col_label]) is list:
+                        if type(data[col_label][0]) is str:
+                            ret_list.append(data[col_label][0])
+                        else:
+                            return False
+                    else:
+                        return False
+                else:
+                    return False
+        return ret_list
+
+    def _check_data(self, table_name, data):
+
+        if table_name not in self.schema.tables:
+            return False
+
+        if len(data) < self.schema.tables[table_name].get_num_columns(exclude_index=True):
+            print 'ERROR: number of columns and items in data do not match'
+            return False
+
+        if type(data) is dict:
+            data = self.make_sorted_list_from_dict(data, table_name)
+            if not data:
+                print 'ERROR: could not make list from data dict'
+                return False
+
+        return data
 
 
 class DBSchema:
