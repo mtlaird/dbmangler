@@ -26,6 +26,10 @@ class DB:
         self.con.row_factory = _dict_factory
         self.cur = self.con.cursor()
 
+    def reset_cursor(self):
+        self.cur.close()
+        self.cur = self.con.cursor()
+
     def run_select_command(self, command, values=None):
         if not values:
             try:

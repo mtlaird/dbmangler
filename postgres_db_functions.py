@@ -41,6 +41,10 @@ class DB:
         if self.db_state != 'Faulted':
             self.cur = self.con.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
+    def reset_cursor(self):
+        self.cur.close()
+        self.cur = self.con.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
     def run_select_command(self, command, values=None, return_list=False):
         if not values:
             try:
